@@ -5,7 +5,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 export default function DashboardPage() {
   return (
     <DashboardLayout>
-      <div className="bg-card rounded-lg shadow p-6 border">
+      <div className="bg-card rounded-lg shadow p-6 border border-border">
         <h2 className="text-2xl font-bold mb-4 text-foreground">
           Welcome to your Dashboard
         </h2>

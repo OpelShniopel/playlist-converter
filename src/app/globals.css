@@ -9,6 +9,11 @@
   --primary-foreground: #ffffff;
   --secondary: #f3f4f6;
   --secondary-foreground: #1f2937;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --border: #e5e7eb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +24,11 @@
     --primary-foreground: #ffffff;
     --secondary: #1f2937;
     --secondary-foreground: #f3f4f6;
+    --muted: #1f2937;
+    --muted-foreground: #9ca3af;
+    --card: #171717;
+    --card-foreground: #ededed;
+    --border: #374151;
   }
 }
 
