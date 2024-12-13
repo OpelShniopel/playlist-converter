@@ -8,9 +8,10 @@ import React, {
   useMemo,
 } from "react";
 import { User as FirebaseUser } from "firebase/auth";
-import { auth } from "@/lib/firebase/config";
+import { auth, db } from "@/lib/firebase/config";
 import { signInWithGoogle } from "@/services/auth";
 import type { User } from "@/types";
+import { doc, getDoc } from "firebase/firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -27,13 +28,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(
-      (firebaseUser: FirebaseUser | null) => {
+      async (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser) {
+          // Get additional user data from Firestore
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          const userData = userDoc.data();
+
           const user: User = {
             id: firebaseUser.uid,
-            email: firebaseUser.email ?? "",
-            displayName: firebaseUser.displayName ?? "",
-            photoURL: firebaseUser.photoURL ?? undefined,
+            // Prefer Firestore data over Firebase auth data
+            email: userData?.email || firebaseUser.email || "",
+            displayName:
+              userData?.displayName || firebaseUser.displayName || "",
+            photoURL: userData?.photoURL || firebaseUser.photoURL || undefined,
           };
           setUser(user);
         } else {

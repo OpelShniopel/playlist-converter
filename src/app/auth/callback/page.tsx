@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { auth } from "@/lib/firebase/config";
+import { signInWithCustomToken } from "firebase/auth";
 
 export default function SpotifyCallback() {
   const router = useRouter();
@@ -27,7 +29,6 @@ export default function SpotifyCallback() {
       }
 
       try {
-        // Exchange code for tokens through our API
         const response = await fetch("/api/auth/spotify", {
           method: "POST",
           headers: {
@@ -39,6 +40,11 @@ export default function SpotifyCallback() {
         if (!response.ok) {
           throw new Error("Failed to exchange code for tokens");
         }
+
+        const data = await response.json();
+
+        // Sign in to Firebase with the custom token
+        await signInWithCustomToken(auth, data.firebaseToken);
 
         // Clean up state
         sessionStorage.removeItem("spotify_auth_state");

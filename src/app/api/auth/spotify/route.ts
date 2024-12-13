@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import { db } from "@/lib/firebase/config";
 import { doc, setDoc } from "firebase/firestore";
+import { adminAuth } from "@/lib/firebase/admin";
 
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const SPOTIFY_API_URL = "https://api.spotify.com/v1";
@@ -62,9 +63,18 @@ export async function POST(request: Request) {
       { merge: true },
     );
 
+    const customToken = await adminAuth.createCustomToken(spotifyUser.id, {
+      provider: "spotify",
+      spotify: {
+        id: spotifyUser.id,
+        email: spotifyUser.email,
+      },
+    });
+
     return NextResponse.json({
       tokens,
       user: spotifyUser,
+      firebaseToken: customToken, // Add this
     });
   } catch (error) {
     console.error("Error in Spotify auth:", error);
