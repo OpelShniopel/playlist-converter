@@ -33,7 +33,9 @@ interface SidebarContentProps {
   signOut: () => Promise<void>;
   onClose?: () => void; // Optional since desktop sidebar doesn't use it
 }
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  children,
+}: Readonly<DashboardLayoutProps>) {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);

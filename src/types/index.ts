@@ -3,6 +3,10 @@ export interface User {
   email: string;
   displayName: string;
   photoURL?: string;
+  connectedServices: {
+    spotify: boolean;
+    youtube: boolean;
+  };
 }
 
 export interface Playlist {
@@ -18,4 +22,27 @@ export interface Track {
   artist: string;
   duration: number;
   url: string;
+}
+
+export interface ServiceTokens {
+  spotifyTokens?: {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: number;
+    scope: string;
+  };
+  googleTokens?: {
+    accessToken: string;
+    refreshToken?: string;
+  };
+}
+
+export interface UserServices {
+  uid: string;
+  tokens: ServiceTokens;
+  connectedServices: {
+    spotify: boolean;
+    youtube: boolean;
+  };
+  updatedAt: string;
 }

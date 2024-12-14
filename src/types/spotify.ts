@@ -1,11 +1,3 @@
-export interface SpotifyTokens {
-  access_token: string;
-  token_type: string;
-  scope: string;
-  expires_in: number;
-  refresh_token: string;
-}
-
 export interface SpotifyUserProfile {
   id: string;
   display_name: string;
@@ -14,4 +6,22 @@ export interface SpotifyUserProfile {
   product: string;
   type: string;
   uri: string;
+}
+
+export interface SpotifyPlaylist {
+  id: string;
+  name: string;
+  description: string;
+  images: { url: string; height: number; width: number }[];
+  tracks: {
+    total: number;
+    href: string;
+  };
+  owner: {
+    display_name: string;
+    id: string;
+  };
+  public: boolean;
+  collaborative: boolean;
+  snapshot_id: string;
 }

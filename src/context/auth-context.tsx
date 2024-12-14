@@ -11,7 +11,7 @@ import { User as FirebaseUser } from "firebase/auth";
 import { auth, db } from "@/lib/firebase/config";
 import { signInWithGoogle } from "@/services/auth";
 import type { User } from "@/types";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -22,35 +22,51 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(
+    const unsubscribeAuth = auth.onAuthStateChanged(
       async (firebaseUser: FirebaseUser | null) => {
-        if (firebaseUser) {
-          // Get additional user data from Firestore
-          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-          const userData = userDoc.data();
-
-          const user: User = {
-            id: firebaseUser.uid,
-            // Prefer Firestore data over Firebase auth data
-            email: userData?.email || firebaseUser.email || "",
-            displayName:
-              userData?.displayName || firebaseUser.displayName || "",
-            photoURL: userData?.photoURL || firebaseUser.photoURL || undefined,
-          };
-          setUser(user);
-        } else {
+        if (!firebaseUser) {
           setUser(null);
+          setLoading(false);
+          return;
         }
-        setLoading(false);
+
+        // Subscribe to Firestore user document
+        const userDoc = doc(db, "users", firebaseUser.uid);
+        const unsubscribeFirestore = onSnapshot(userDoc, (snapshot) => {
+          if (snapshot.exists()) {
+            const userData = snapshot.data();
+
+            setUser({
+              id: firebaseUser.uid,
+              email: userData.email || firebaseUser.email || "",
+              displayName:
+                userData.displayName || firebaseUser.displayName || "",
+              photoURL: userData.photoURL || firebaseUser.photoURL || undefined,
+              connectedServices: userData.connectedServices || {
+                spotify: false,
+                youtube: false,
+              },
+            });
+          }
+          setLoading(false);
+        });
+
+        return () => {
+          unsubscribeFirestore();
+        };
       },
     );
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+    };
   }, []);
 
   const handleGoogleSignIn = async () => {

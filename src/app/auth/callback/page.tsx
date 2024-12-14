@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase/config";
-import { signInWithCustomToken } from "firebase/auth";
+import { signInWithCustomToken, onAuthStateChanged } from "firebase/auth";
 
 export default function SpotifyCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     async function handleCallback() {
@@ -28,13 +29,45 @@ export default function SpotifyCallback() {
         return;
       }
 
+      // Wait for auth state to be determined
+      await new Promise<void>((resolve) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log("Found authenticated user:", user.uid);
+          } else {
+            console.log("No authenticated user found");
+          }
+          unsubscribe();
+          setAuthChecked(true);
+          resolve();
+        });
+      });
+
       try {
+        // Get current Firebase user after auth state is checked
+        const currentUser = auth.currentUser;
+
+        if (!currentUser) {
+          console.error("No authenticated user found after auth check");
+          // Store the Spotify auth code temporarily
+          sessionStorage.setItem("pending_spotify_code", code);
+          // Redirect to log in
+          router.push("/?error=login_required");
+          return;
+        }
+
+        console.log("Proceeding with Spotify auth for user:", currentUser.uid);
+
+        // Exchange code for tokens through our API
         const response = await fetch("/api/auth/spotify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ code }),
+          body: JSON.stringify({
+            code,
+            googleUid: currentUser.uid,
+          }),
         });
 
         if (!response.ok) {
@@ -43,14 +76,15 @@ export default function SpotifyCallback() {
 
         const data = await response.json();
 
-        // Sign in to Firebase with the custom token
-        await signInWithCustomToken(auth, data.firebaseToken);
+        // Sign in with the custom token
+        await signInWithCustomToken(auth, data.customToken);
 
-        // Clean up state
+        // Clean up
         sessionStorage.removeItem("spotify_auth_state");
+        sessionStorage.removeItem("pending_spotify_code");
 
-        // Redirect to home page
-        router.push("/");
+        // Redirect to dashboard
+        router.push("/dashboard");
       } catch (error) {
         console.error("Error in Spotify callback:", error);
         router.push("/?error=token_exchange_failed");
@@ -60,10 +94,21 @@ export default function SpotifyCallback() {
     handleCallback();
   }, [router, searchParams]);
 
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Checking authentication status...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
         <p>Completing Spotify authentication...</p>
       </div>
     </div>
