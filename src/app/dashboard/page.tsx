@@ -2,6 +2,7 @@
 
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { ConnectionStatus } from "@/components/connection-status";
+import { YouTubePlaylists } from "@/components/youtube-playlists";
 
 export default function DashboardPage() {
   return (
@@ -20,6 +21,10 @@ export default function DashboardPage() {
             Once connected, go to the Playlists page to select a playlist to
             convert.
           </p>
+        </div>
+
+        <div className="bg-card rounded-lg border border-border p-6">
+          <YouTubePlaylists />
         </div>
       </div>
     </DashboardLayout>
