@@ -22,10 +22,6 @@ export default function DashboardPage() {
             convert.
           </p>
         </div>
-
-        <div className="bg-card rounded-lg border border-border p-6">
-          <YouTubePlaylists />
-        </div>
       </div>
     </DashboardLayout>
   );

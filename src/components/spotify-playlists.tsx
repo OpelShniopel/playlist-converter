@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth-context";
-import { fetchYouTubePlaylists } from "@/services/youtube";
-import { YouTubePlaylist } from "@/types/youtube";
+import { fetchSpotifyPlaylists } from "@/services/spotify";
+import { SpotifyPlaylist } from "@/types/spotify";
 import { MusicalNoteIcon } from "@heroicons/react/24/outline";
 
-export function YouTubePlaylists() {
+export function SpotifyPlaylists() {
   const { user } = useAuth();
-  const [playlists, setPlaylists] = useState<YouTubePlaylist[]>([]);
+  const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const canConvert =
+    user?.connectedServices?.spotify && user?.connectedServices?.youtube;
 
   useEffect(() => {
     async function loadPlaylists() {
-      if (!user?.connectedServices?.youtube) return;
+      if (!user?.connectedServices?.spotify) return;
 
       try {
         setLoading(true);
-        const youtubePlaylist = await fetchYouTubePlaylists(user.id);
-        setPlaylists(youtubePlaylist);
+        const spotifyPlaylists = await fetchSpotifyPlaylists(user.id);
+        setPlaylists(spotifyPlaylists);
       } catch (err) {
-        console.error("Error fetching YouTube playlists:", err);
+        console.error("Error fetching Spotify playlists:", err);
         setError(
           err instanceof Error ? err.message : "Failed to load playlists",
         );
@@ -49,15 +51,15 @@ export function YouTubePlaylists() {
     );
   }
 
-  if (!user?.connectedServices?.youtube) {
+  if (!user?.connectedServices?.spotify) {
     return (
       <div className="text-center py-8">
         <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-medium text-foreground">
-          YouTube Not Connected
+          Spotify Not Connected
         </h3>
         <p className="mt-2 text-muted-foreground">
-          Connect your YouTube account to see your playlists here.
+          Connect your Spotify account to see your playlists here.
         </p>
       </div>
     );
@@ -66,7 +68,7 @@ export function YouTubePlaylists() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">YouTube Playlists</h2>
+        <h2 className="text-xl font-bold text-foreground">Spotify Playlists</h2>
         <span className="text-muted-foreground">
           {playlists.length} playlist{playlists.length !== 1 ? "s" : ""}
         </span>
@@ -76,13 +78,13 @@ export function YouTubePlaylists() {
         {playlists.map((playlist) => (
           <div
             key={playlist.id}
-            className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
+            className="group bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
           >
             <div className="aspect-square relative">
-              {playlist.snippet.thumbnails.high?.url ? (
+              {playlist.images[0] ? (
                 <img
-                  src={playlist.snippet.thumbnails.high.url}
-                  alt={playlist.snippet.title}
+                  src={playlist.images[0].url}
+                  alt={playlist.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -93,14 +95,31 @@ export function YouTubePlaylists() {
             </div>
             <div className="p-4">
               <h3 className="font-semibold text-foreground truncate">
-                {playlist.snippet.title}
+                {playlist.name}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                {playlist.contentDetails.itemCount} videos
+                {playlist.tracks.total} tracks
               </p>
               <p className="text-xs text-muted-foreground mt-1 truncate">
-                By {playlist.snippet.channelTitle}
+                By {playlist.owner.display_name}
               </p>
+              <button
+                className={`mt-3 w-full py-2 px-3 rounded-md transition-all ${
+                  canConvert
+                    ? "bg-primary text-primary-foreground opacity-0 group-hover:opacity-100"
+                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                }`}
+                disabled={!canConvert}
+                onClick={() => {
+                  if (canConvert) {
+                    console.log("Convert playlist:", playlist.id);
+                  }
+                }}
+              >
+                {canConvert
+                  ? "Convert to YouTube"
+                  : "Connect YouTube to Convert"}
+              </button>
             </div>
           </div>
         ))}
@@ -113,7 +132,7 @@ export function YouTubePlaylists() {
             No playlists found
           </h3>
           <p className="mt-2 text-muted-foreground">
-            Create a playlist on YouTube to see it here.
+            Create a playlist on Spotify to see it here.
           </p>
         </div>
       )}
