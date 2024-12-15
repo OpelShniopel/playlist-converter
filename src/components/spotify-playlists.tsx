@@ -3,12 +3,16 @@ import { useAuth } from "@/context/auth-context";
 import { fetchSpotifyPlaylists } from "@/services/spotify";
 import { SpotifyPlaylist } from "@/types/spotify";
 import { MusicalNoteIcon } from "@heroicons/react/24/outline";
+import { ConversionDialog } from "./conversion-dialog";
 
 export function SpotifyPlaylists() {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPlaylist, setSelectedPlaylist] =
+    useState<SpotifyPlaylist | null>(null);
+
   const canConvert =
     user?.connectedServices?.spotify && user?.connectedServices?.youtube;
 
@@ -110,11 +114,7 @@ export function SpotifyPlaylists() {
                     : "bg-gray-200 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!canConvert}
-                onClick={() => {
-                  if (canConvert) {
-                    console.log("Convert playlist:", playlist.id);
-                  }
-                }}
+                onClick={() => setSelectedPlaylist(playlist)}
               >
                 {canConvert
                   ? "Convert to YouTube"
@@ -124,6 +124,15 @@ export function SpotifyPlaylists() {
           </div>
         ))}
       </div>
+
+      {selectedPlaylist && (
+        <ConversionDialog
+          playlistId={selectedPlaylist.id}
+          playlistName={selectedPlaylist.name}
+          isOpen={!!selectedPlaylist}
+          onClose={() => setSelectedPlaylist(null)}
+        />
+      )}
 
       {playlists.length === 0 && (
         <div className="text-center py-12">

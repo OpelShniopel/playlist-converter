@@ -23,10 +23,10 @@ export default function PlaylistsPage() {
           <SpotifyPlaylists />
         </div>
 
-        {/* YouTube Playlists Section */}
-        <div className="bg-card border border-border rounded-lg p-6">
-          <YouTubePlaylists />
-        </div>
+        {/*/!* YouTube Playlists Section *!/*/}
+        {/*<div className="bg-card border border-border rounded-lg p-6">*/}
+        {/*  <YouTubePlaylists />*/}
+        {/*</div>*/}
       </div>
     </DashboardLayout>
   );

@@ -61,7 +61,7 @@ export function AuthProvider({
         return () => {
           unsubscribeFirestore();
         };
-      }
+      },
     );
 
     return () => {
@@ -89,7 +89,7 @@ export function AuthProvider({
       signInWithGoogle: handleGoogleSignIn,
       signOut,
     }),
-    [user, loading]
+    [user, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

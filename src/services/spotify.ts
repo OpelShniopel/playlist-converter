@@ -68,7 +68,7 @@ async function refreshSpotifyToken(userId: string, refreshToken: string) {
   }
 }
 
-async function getValidSpotifyToken(userId: string) {
+export async function getValidSpotifyToken(userId: string) {
   const userDoc = await getDoc(doc(db, "users", userId));
   const userData = userDoc.data();
   const tokens = userData?.spotifyTokens;
