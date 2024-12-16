@@ -16,6 +16,7 @@ export interface SpotifyPlaylist {
   tracks: {
     total: number;
     href: string;
+    selectedIds?: string[]; // Add this optional property
   };
   owner: {
     display_name: string;
@@ -24,4 +25,30 @@ export interface SpotifyPlaylist {
   public: boolean;
   collaborative: boolean;
   snapshot_id: string;
+}
+
+export interface SpotifyTrackItem {
+  track: SpotifyTrack;
+  added_at: string;
+}
+
+export interface SpotifyTrack {
+  id: string;
+  name: string;
+  artists: {
+    id: string;
+    name: string;
+    uri: string;
+  }[];
+  album: {
+    id: string;
+    name: string;
+    images: {
+      url: string;
+      height: number;
+      width: number;
+    }[];
+  };
+  duration_ms: number;
+  uri: string;
 }

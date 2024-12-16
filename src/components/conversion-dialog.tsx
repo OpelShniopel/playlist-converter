@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 interface ConversionDialogProps {
   playlistId: string;
   playlistName: string;
+  selectedTracks?: string[];
   isOpen: boolean;
   onClose: () => void;
 }
@@ -19,6 +20,7 @@ interface ConversionDialogProps {
 export function ConversionDialog({
   playlistId,
   playlistName,
+  selectedTracks = [], // Add this prop
   isOpen,
   onClose,
 }: Readonly<ConversionDialogProps>) {
@@ -42,6 +44,7 @@ export function ConversionDialog({
           setProgress((processed / total) * 100);
           setCurrentTrack(currentTrack);
         },
+        selectedTracks.length > 0 ? selectedTracks : undefined, // Pass selected tracks if any
       );
 
       // Success - wait a moment before closing

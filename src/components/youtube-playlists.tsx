@@ -31,6 +31,21 @@ export function YouTubePlaylists() {
     loadPlaylists();
   }, [user]);
 
+  // First, check if YouTube is connected
+  if (!user?.connectedServices?.youtube) {
+    return (
+      <div className="text-center py-8">
+        <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+        <h3 className="mt-4 text-lg font-medium text-foreground">
+          YouTube Not Connected
+        </h3>
+        <p className="mt-2 text-muted-foreground">
+          Connect your YouTube account to see your playlists here.
+        </p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">

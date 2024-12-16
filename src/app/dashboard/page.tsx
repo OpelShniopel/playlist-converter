@@ -2,7 +2,7 @@
 
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { ConnectionStatus } from "@/components/connection-status";
-import { YouTubePlaylists } from "@/components/youtube-playlists";
+// import { YouTubePlaylists } from "@/components/youtube-playlists";
 
 export default function DashboardPage() {
   return (
@@ -12,8 +12,6 @@ export default function DashboardPage() {
           Welcome to your Dashboard
         </h2>
 
-        <ConnectionStatus />
-
         <div className="bg-card rounded-lg border border-border p-6">
           <h3 className="text-lg font-semibold mb-2">Getting Started</h3>
           <p className="text-muted-foreground">
@@ -22,6 +20,8 @@ export default function DashboardPage() {
             convert.
           </p>
         </div>
+
+        <ConnectionStatus />
       </div>
     </DashboardLayout>
   );

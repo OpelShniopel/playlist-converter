@@ -6,6 +6,8 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  deleteDoc,
 } from "firebase/firestore";
 import { fetchSpotifyPlaylists, getValidSpotifyToken } from "./spotify";
 import {
@@ -33,10 +35,19 @@ interface Conversion {
   updatedAt: string;
 }
 
+interface SpotifyPlaylistTrackObject {
+  track: {
+    id: string;
+    name: string;
+    artists: { name: string }[];
+  };
+}
+
 export async function convertSpotifyToYouTube(
   userId: string,
   spotifyPlaylistId: string,
   onProgress?: (progress: ConversionProgress) => void,
+  selectedTrackIds?: string[], // Add this parameter
 ) {
   try {
     // Create conversion record
@@ -80,18 +91,23 @@ export async function convertSpotifyToYouTube(
       },
     });
     const tracksData = await response.json();
-    const tracks = tracksData.items;
+    let tracks = tracksData.items;
 
-    // Convert each track
+    // Filter tracks if selectedTrackIds is provided
+    if (selectedTrackIds && selectedTrackIds.length > 0) {
+      tracks = tracks.filter((track: SpotifyPlaylistTrackObject) =>
+        selectedTrackIds.includes(track.track.id),
+      );
+    }
+
+    // Convert tracks
     let processed = 0;
     for (const track of tracks) {
       try {
-        // Search for equivalent video on YouTube
         const searchQuery = `${track.track.name} ${track.track.artists[0].name} official`;
         const searchResults = await searchYouTubeVideo(userId, searchQuery, 1);
 
         if (searchResults && searchResults.length > 0) {
-          // Add the best match to YouTube playlist
           await addVideoToPlaylist(
             userId,
             youtubePlaylist.id,
@@ -100,15 +116,13 @@ export async function convertSpotifyToYouTube(
         }
 
         processed++;
-
-        // Update progress
         const progress = (processed / tracks.length) * 100;
+
         await updateDoc(conversionRef, {
           progress,
           updatedAt: new Date().toISOString(),
         });
 
-        // Notify progress callback
         onProgress?.({
           processed,
           total: tracks.length,
@@ -116,11 +130,9 @@ export async function convertSpotifyToYouTube(
         });
       } catch (error) {
         console.error(`Error converting track: ${track.track.name}`, error);
-        // Continue with next track even if one fails
       }
     }
 
-    // Mark conversion as complete
     await updateDoc(conversionRef, {
       status: "completed",
       progress: 100,
@@ -143,4 +155,14 @@ export async function getConversionHistory(userId: string) {
     id: doc.id,
     ...doc.data(),
   })) as (Conversion & { id: string })[];
+}
+
+export async function deleteConversion(conversionId: string) {
+  try {
+    const conversionRef = doc(db, "conversions", conversionId);
+    await deleteDoc(conversionRef);
+  } catch (error) {
+    console.error("Error deleting conversion:", error);
+    throw error;
+  }
 }

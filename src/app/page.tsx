@@ -31,7 +31,7 @@ export default function Home() {
             Playlist Converter
           </h1>
           <p className="text-xl mb-12 text-muted-foreground">
-            Convert your playlists between Spotify, YouTube, and SoundCloud
+            Convert your playlists between Spotify and YouTube.
           </p>
 
           {!user && (

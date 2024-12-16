@@ -105,6 +105,26 @@ export async function fetchSpotifyPlaylists(
   }
 }
 
+export async function getPlaylistTracks(userId: string, playlistId: string) {
+  try {
+    const tokens = await getValidSpotifyToken(userId);
+
+    const response = await axios.get(
+      `${SPOTIFY_API_URL}/playlists/${playlistId}/tracks`,
+      {
+        headers: {
+          Authorization: `Bearer ${tokens.accessToken}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching playlist tracks:", error);
+    throw error;
+  }
+}
+
 export async function fetchSpotifyUserProfile(
   userId: string,
 ): Promise<SpotifyUserProfile> {

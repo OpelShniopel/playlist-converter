@@ -4,6 +4,11 @@ import { fetchSpotifyPlaylists } from "@/services/spotify";
 import { SpotifyPlaylist } from "@/types/spotify";
 import { MusicalNoteIcon } from "@heroicons/react/24/outline";
 import { ConversionDialog } from "./conversion-dialog";
+import { SpotifyPlaylistTracks } from "./spotify-playlist-tracks";
+
+interface SelectedTracksMap {
+  [playlistId: string]: string[];
+}
 
 export function SpotifyPlaylists() {
   const { user } = useAuth();
@@ -12,6 +17,10 @@ export function SpotifyPlaylists() {
   const [error, setError] = useState<string | null>(null);
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyPlaylist | null>(null);
+  const [expandedPlaylistId, setExpandedPlaylistId] = useState<string | null>(
+    null,
+  );
+  const [selectedTracks, setSelectedTracks] = useState<SelectedTracksMap>({});
 
   const canConvert =
     user?.connectedServices?.spotify && user?.connectedServices?.youtube;
@@ -37,24 +46,6 @@ export function SpotifyPlaylists() {
     loadPlaylists();
   }, [user]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-card rounded-lg shadow p-6 border border-border">
-        <div className="text-center text-red-500">
-          <p>Error loading playlists: {error}</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!user?.connectedServices?.spotify) {
     return (
       <div className="text-center py-8">
@@ -65,6 +56,47 @@ export function SpotifyPlaylists() {
         <p className="mt-2 text-muted-foreground">
           Connect your Spotify account to see your playlists here.
         </p>
+      </div>
+    );
+  }
+
+  const handleTrackSelect = (playlistId: string, trackIds: string[]) => {
+    setSelectedTracks((prev) => ({
+      ...prev,
+      [playlistId]: trackIds,
+    }));
+  };
+
+  const handleConvertSelected = (playlist: SpotifyPlaylist) => {
+    const playlistSelectedTracks = selectedTracks[playlist.id] || [];
+    if (playlistSelectedTracks.length === 0) {
+      // Convert entire playlist
+      setSelectedPlaylist(playlist);
+    } else {
+      // Convert selected tracks
+      setSelectedPlaylist({
+        ...playlist,
+        tracks: {
+          ...playlist.tracks,
+          total: playlistSelectedTracks.length,
+          selectedIds: playlistSelectedTracks,
+        },
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center text-red-500">
+        <p>Error loading playlists: {error}</p>
       </div>
     );
   }
@@ -82,7 +114,7 @@ export function SpotifyPlaylists() {
         {playlists.map((playlist) => (
           <div
             key={playlist.id}
-            className="group bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
+            className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
           >
             <div className="aspect-square relative">
               {playlist.images[0] ? (
@@ -107,17 +139,36 @@ export function SpotifyPlaylists() {
               <p className="text-xs text-muted-foreground mt-1 truncate">
                 By {playlist.owner.display_name}
               </p>
+
+              {user?.id && (
+                <SpotifyPlaylistTracks
+                  playlistId={playlist.id}
+                  userId={user.id}
+                  onTrackSelect={(trackIds) =>
+                    handleTrackSelect(playlist.id, trackIds)
+                  }
+                  isExpanded={expandedPlaylistId === playlist.id}
+                  onToggleExpand={() =>
+                    setExpandedPlaylistId(
+                      expandedPlaylistId === playlist.id ? null : playlist.id,
+                    )
+                  }
+                />
+              )}
+
               <button
                 className={`mt-3 w-full py-2 px-3 rounded-md transition-all ${
                   canConvert
-                    ? "bg-primary text-primary-foreground opacity-0 group-hover:opacity-100"
+                    ? "bg-primary text-primary-foreground opacity-100"
                     : "bg-gray-200 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!canConvert}
-                onClick={() => setSelectedPlaylist(playlist)}
+                onClick={() => handleConvertSelected(playlist)}
               >
                 {canConvert
-                  ? "Convert to YouTube"
+                  ? (selectedTracks[playlist.id]?.length || 0) > 0
+                    ? `Convert ${selectedTracks[playlist.id].length} Selected Tracks`
+                    : "Convert Entire Playlist"
                   : "Connect YouTube to Convert"}
               </button>
             </div>
@@ -129,8 +180,15 @@ export function SpotifyPlaylists() {
         <ConversionDialog
           playlistId={selectedPlaylist.id}
           playlistName={selectedPlaylist.name}
+          selectedTracks={selectedTracks[selectedPlaylist.id] || []}
           isOpen={!!selectedPlaylist}
-          onClose={() => setSelectedPlaylist(null)}
+          onClose={() => {
+            setSelectedPlaylist(null);
+            setSelectedTracks((prev) => ({
+              ...prev,
+              [selectedPlaylist.id]: [],
+            }));
+          }}
         />
       )}
 
