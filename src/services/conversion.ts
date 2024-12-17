@@ -47,7 +47,8 @@ export async function convertSpotifyToYouTube(
   userId: string,
   spotifyPlaylistId: string,
   onProgress?: (progress: ConversionProgress) => void,
-  selectedTrackIds?: string[], // Add this parameter
+  selectedTrackIds?: string[],
+  customName?: string,
 ) {
   try {
     // Create conversion record
@@ -74,7 +75,7 @@ export async function convertSpotifyToYouTube(
     // Create YouTube playlist
     const youtubePlaylist = await createYouTubePlaylist(
       userId,
-      `${playlist.name} (from Spotify)`,
+      customName ?? `${playlist.name} (from Spotify)`,
       playlist.description || "Converted from Spotify",
       "private",
     );

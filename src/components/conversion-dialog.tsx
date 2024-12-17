@@ -20,7 +20,7 @@ interface ConversionDialogProps {
 export function ConversionDialog({
   playlistId,
   playlistName,
-  selectedTracks = [], // Add this prop
+  selectedTracks = [],
   isOpen,
   onClose,
 }: Readonly<ConversionDialogProps>) {
@@ -29,6 +29,7 @@ export function ConversionDialog({
   const [progress, setProgress] = useState(0);
   const [currentTrack, setCurrentTrack] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [customName, setCustomName] = useState(playlistName);
 
   const handleConversion = async () => {
     if (!user) return;
@@ -44,7 +45,8 @@ export function ConversionDialog({
           setProgress((processed / total) * 100);
           setCurrentTrack(currentTrack);
         },
-        selectedTracks.length > 0 ? selectedTracks : undefined, // Pass selected tracks if any
+        selectedTracks.length > 0 ? selectedTracks : undefined,
+        customName, // Pass the custom name to the conversion function
       );
 
       // Success - wait a moment before closing
@@ -53,6 +55,7 @@ export function ConversionDialog({
         setConverting(false);
         setProgress(0);
         setCurrentTrack("");
+        setCustomName(playlistName); // Reset the custom name
       }, 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Conversion failed");
@@ -68,20 +71,36 @@ export function ConversionDialog({
         </DialogHeader>
 
         <div className="py-4">
-          <p className="text-muted-foreground mb-4">
-            Convert &#34;{playlistName}&#34; to a YouTube playlist?
-          </p>
-
-          {converting && (
-            <div className="space-y-4">
-              <Progress value={progress} className="w-full" />
-              <p className="text-sm text-muted-foreground">
-                Converting: {currentTrack}
-              </p>
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="playlistName"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
+                YouTube Playlist Name
+              </label>
+              <input
+                type="text"
+                id="playlistName"
+                value={customName}
+                onChange={(e) => setCustomName(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                placeholder="Enter playlist name"
+                disabled={converting}
+              />
             </div>
-          )}
 
-          {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+            {converting && (
+              <div className="space-y-4">
+                <Progress value={progress} className="w-full" />
+                <p className="text-sm text-muted-foreground">
+                  Converting: {currentTrack}
+                </p>
+              </div>
+            )}
+
+            {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+          </div>
         </div>
 
         <div className="flex justify-end gap-3">
@@ -94,7 +113,7 @@ export function ConversionDialog({
           </button>
           <button
             onClick={handleConversion}
-            disabled={converting}
+            disabled={converting || !customName.trim()}
             className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-opacity-90 disabled:opacity-50"
           >
             {converting ? "Converting..." : "Convert"}
