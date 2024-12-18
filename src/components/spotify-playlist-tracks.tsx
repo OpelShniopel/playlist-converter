@@ -119,9 +119,9 @@ export function SpotifyPlaylistTracks({
       </div>
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
-        {tracks.map((track) => (
+        {tracks.map((track, index) => (
           <div
-            key={track.id}
+            key={track.id || `track-${index}`} // Fallback to index if id is null
             className="flex items-center p-2 hover:bg-muted rounded-md cursor-pointer"
             onClick={() => toggleTrack(track.id)}
           >
