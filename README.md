@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Playlist Converter
 
-## Getting Started
+A modern web application that allows users to convert their playlists between different music streaming platforms.
+Currently, it supports conversion from Spotify to YouTube,
+with an intuitive user interface and seamless authentication flow.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Multi-Platform Authentication**
+    - Google/YouTube authentication
+    - Spotify authentication
+    - Secure token management with automatic refresh
+
+- **Playlist Management**
+    - View Spotify playlists with detailed track information
+    - Select specific tracks for conversion
+    - Track-by-track conversion progress monitoring
+    - Conversion history tracking
+
+- **User Interface**
+    - Modern, responsive design
+    - Dark mode support
+    - Real-time conversion progress updates
+    - Beautiful playlist grid layout with thumbnails
+
+## Tech Stack
+
+- **Frontend Framework**: Next.js 15.1.0
+- **UI Components**: React 19
+- **Styling**: Tailwind CSS
+- **Authentication**: Firebase Authentication
+- **Database**: Firebase Firestore
+- **APIs**:
+    - Spotify Web API
+    - YouTube Data API v3
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- Node.js (latest LTS version recommended)
+- Yarn package manager
+- Firebase project with Firestore database
+- Spotify Developer account and registered application
+- Google Cloud project with YouTube Data API enabled
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```plaintext
+# Firebase Config
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+
+# Firebase Admin
+FIREBASE_ADMIN_PROJECT_ID=
+FIREBASE_ADMIN_CLIENT_EMAIL=
+FIREBASE_ADMIN_PRIVATE_KEY=
+
+# Spotify Config
+NEXT_PUBLIC_SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+
+# Application URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd playlist-converter
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
 
-## Learn More
+3. Run the development server:
+   ```bash
+   yarn dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/               # Next.js app router pages and API routes
+├── components/        # React components
+├── context/          # React context providers
+├── lib/              # Firebase and other configurations
+├── services/         # API service functions
+└── types/            # TypeScript type definitions
+```
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application uses Next.js App Router and follows a component-based architecture. Key areas include:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/*`: Page components and API routes
+- `src/components/*`: Reusable UI components
+- `src/services/*`: Service functions for API interactions
+- `src/context/*`: Global state management
+- `src/lib/*`: Configuration and utilities
+
+## Building for Production
+
+1. Build the application:
+   ```bash
+   yarn build
+   ```
+
+2. Start the production server:
+   ```bash
+   yarn start
+   ```
+
+## Deployment
+
+The application can be deployed on Vercel with minimal configuration. Simply connect your repository and:
+
+1. Configure environment variables in Vercel dashboard
+2. Deploy with the "Import Project" function
+3. Vercel will automatically build and deploy your application
