@@ -4,10 +4,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+  Progress,
+} from "@/components/ui";
 import { useAuth } from "@/context/auth-context";
 import { convertSpotifyToYouTube } from "@/services/conversion";
-import { Progress } from "@/components/ui/progress";
 
 interface ConversionDialogProps {
   playlistId: string;

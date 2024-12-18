@@ -45,7 +45,7 @@ export default function Home() {
           <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
             <span>Created by</span>
             <span className="font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
-              Dovydas
+              Jessica ;)
             </span>
             <span>© {new Date().getFullYear()}</span>
           </div>
