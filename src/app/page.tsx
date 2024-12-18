@@ -40,6 +40,16 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        <footer className="fixed bottom-0 left-0 right-0 p-4 backdrop-blur-sm bg-background/80">
+          <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
+            <span>Created by</span>
+            <span className="font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+              Dovydas
+            </span>
+            <span>© {new Date().getFullYear()}</span>
+          </div>
+        </footer>
       </main>
     </div>
   );
