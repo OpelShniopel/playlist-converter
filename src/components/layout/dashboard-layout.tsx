@@ -11,6 +11,7 @@ import {
   UserIcon,
   Bars3Icon,
   XMarkIcon,
+  ChartBarIcon,
 } from "@heroicons/react/24/outline";
 
 interface DashboardLayoutProps {
@@ -52,6 +53,11 @@ export default function DashboardLayout({
       name: "My Playlists",
       href: "/dashboard/playlists",
       icon: MusicalNoteIcon,
+    },
+    {
+      name: "Stats",
+      href: "/dashboard/stats",
+      icon: ChartBarIcon,
     },
     {
       name: "Conversions",
