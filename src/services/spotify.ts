@@ -105,18 +105,17 @@ export async function fetchSpotifyPlaylists(
   }
 }
 
-export async function getPlaylistTracks(userId: string, playlistId: string) {
+export async function getPlaylistTracks(userId: string, playlistId: string, url?: string) {
   try {
     const tokens = await getValidSpotifyToken(userId);
 
-    const response = await axios.get(
-      `${SPOTIFY_API_URL}/playlists/${playlistId}/tracks`,
-      {
-        headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
-        },
+    const requestUrl = url ?? `${SPOTIFY_API_URL}/playlists/${playlistId}/tracks`;
+
+    const response = await axios.get(requestUrl, {
+      headers: {
+        Authorization: `Bearer ${tokens.accessToken}`,
       },
-    );
+    });
 
     return response.data;
   } catch (error) {
