@@ -7,11 +7,11 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { signInWithGoogle } from '@/services/auth';
 import { User as FirebaseUser } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 
 import type { User } from '@/types';
+import { signInWithGoogle } from '@/services/auth';
 import { auth, db } from '@/lib/firebase/config';
 
 interface AuthContextType {

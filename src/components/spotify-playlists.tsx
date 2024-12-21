@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/auth-context';
-import { fetchSpotifyPlaylists } from '@/services/spotify';
 import {
   MagnifyingGlassIcon,
   MusicalNoteIcon,
 } from '@heroicons/react/24/outline';
 
 import { SpotifyPlaylist } from '@/types/spotify';
+import { fetchSpotifyPlaylists } from '@/services/spotify';
+import { useAuth } from '@/context/auth-context';
 
 import { ConversionDialog } from './conversion-dialog';
 import { SpotifyPlaylistTracks } from './spotify-playlist-tracks';

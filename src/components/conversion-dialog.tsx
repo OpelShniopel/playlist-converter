@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/context/auth-context';
-import { convertSpotifyToYouTube } from '@/services/conversion';
 
+import { convertSpotifyToYouTube } from '@/services/conversion';
+import { useAuth } from '@/context/auth-context';
 import {
   Dialog,
   DialogContent,

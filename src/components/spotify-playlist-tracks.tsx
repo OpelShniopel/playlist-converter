@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getPlaylistTracks } from '@/services/spotify';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -7,6 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 import { SpotifyTrack, SpotifyTrackItem } from '@/types/spotify';
+import { getPlaylistTracks } from '@/services/spotify';
 
 interface SpotifyPlaylistTracksProps {
   playlistId: string;

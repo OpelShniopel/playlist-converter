@@ -1,7 +1,6 @@
 'use client';
 
 import { useAuth } from '@/context/auth-context';
-
 import { ConversionHistory } from '@/components/conversion-history';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 

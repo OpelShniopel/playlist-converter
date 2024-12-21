@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/auth-context';
 import {
   ArrowPathIcon,
   Bars3Icon,
@@ -12,6 +11,8 @@ import {
   UserIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+
+import { useAuth } from '@/context/auth-context';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

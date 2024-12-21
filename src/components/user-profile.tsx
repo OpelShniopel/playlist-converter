@@ -1,5 +1,6 @@
-import { useAuth } from '@/context/auth-context';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
+
+import { useAuth } from '@/context/auth-context';
 
 export function UserProfile() {
   const { user, signOut } = useAuth();

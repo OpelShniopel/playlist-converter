@@ -1,7 +1,7 @@
 'use client';
 
-import { useAuth } from '@/context/auth-context';
 import { getSpotifyAuthUrl } from '@/services/spotify';
+import { useAuth } from '@/context/auth-context';
 
 export function ConnectionStatus() {
   const { user, signInWithGoogle } = useAuth();

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/auth-context';
-import { fetchYouTubePlaylists } from '@/services/youtube';
 import { MusicalNoteIcon } from '@heroicons/react/24/outline';
 
 import { YouTubePlaylist } from '@/types/youtube';
+import { fetchYouTubePlaylists } from '@/services/youtube';
+import { useAuth } from '@/context/auth-context';
 
 export function YouTubePlaylists() {
   const { user } = useAuth();
