@@ -21,7 +21,7 @@ export function YouTubePlaylists() {
       } catch (err) {
         console.error("Error fetching YouTube playlists:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to load playlists",
+          err instanceof Error ? err.message : "Failed to load playlists"
         );
       } finally {
         setLoading(false);

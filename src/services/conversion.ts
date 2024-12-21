@@ -48,7 +48,7 @@ export async function convertSpotifyToYouTube(
   spotifyPlaylistId: string,
   onProgress?: (progress: ConversionProgress) => void,
   selectedTrackIds?: string[],
-  customName?: string,
+  customName?: string
 ) {
   try {
     // Create conversion record
@@ -77,7 +77,7 @@ export async function convertSpotifyToYouTube(
       userId,
       customName ?? `${playlist.name} (from Spotify)`,
       playlist.description || "Converted from Spotify",
-      "private",
+      "private"
     );
 
     // Update conversion record with target playlist ID
@@ -97,7 +97,7 @@ export async function convertSpotifyToYouTube(
     // Filter tracks if selectedTrackIds is provided
     if (selectedTrackIds && selectedTrackIds.length > 0) {
       tracks = tracks.filter((track: SpotifyPlaylistTrackObject) =>
-        selectedTrackIds.includes(track.track.id),
+        selectedTrackIds.includes(track.track.id)
       );
     }
 
@@ -112,7 +112,7 @@ export async function convertSpotifyToYouTube(
           await addVideoToPlaylist(
             userId,
             youtubePlaylist.id,
-            searchResults[0].id.videoId,
+            searchResults[0].id.videoId
           );
         }
 

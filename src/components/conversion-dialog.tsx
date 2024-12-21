@@ -46,7 +46,7 @@ export function ConversionDialog({
           setCurrentTrack(currentTrack);
         },
         selectedTracks.length > 0 ? selectedTracks : undefined,
-        customName, // Pass the custom name to the conversion function
+        customName // Pass the custom name to the conversion function
       );
 
       // Success - wait a moment before closing

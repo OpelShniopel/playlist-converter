@@ -20,14 +20,14 @@ export function SpotifyPlaylists() {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
   const [filteredPlaylists, setFilteredPlaylists] = useState<SpotifyPlaylist[]>(
-    [],
+    []
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyPlaylist | null>(null);
   const [expandedPlaylistId, setExpandedPlaylistId] = useState<string | null>(
-    null,
+    null
   );
   const [selectedTracks, setSelectedTracks] = useState<SelectedTracksMap>({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,7 +48,7 @@ export function SpotifyPlaylists() {
       } catch (err) {
         console.error("Error fetching Spotify playlists:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to load playlists",
+          err instanceof Error ? err.message : "Failed to load playlists"
         );
       } finally {
         setLoading(false);
@@ -65,7 +65,7 @@ export function SpotifyPlaylists() {
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter((playlist) =>
-        playlist.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        playlist.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -218,7 +218,7 @@ export function SpotifyPlaylists() {
                   isExpanded={expandedPlaylistId === playlist.id}
                   onToggleExpand={() =>
                     setExpandedPlaylistId(
-                      expandedPlaylistId === playlist.id ? null : playlist.id,
+                      expandedPlaylistId === playlist.id ? null : playlist.id
                     )
                   }
                 />
@@ -235,7 +235,9 @@ export function SpotifyPlaylists() {
               >
                 {canConvert
                   ? (selectedTracks[playlist.id]?.length || 0) > 0
-                    ? `Convert ${selectedTracks[playlist.id].length} Selected Tracks`
+                    ? `Convert ${
+                        selectedTracks[playlist.id].length
+                      } Selected Tracks`
                     : "Convert Entire Playlist"
                   : "Connect YouTube to Convert"}
               </button>

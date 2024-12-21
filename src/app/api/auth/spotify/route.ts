@@ -23,10 +23,10 @@ async function refreshSpotifyToken(userId: string, refreshToken: string) {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: `Basic ${Buffer.from(
-            `${CLIENT_ID}:${CLIENT_SECRET}`,
+            `${CLIENT_ID}:${CLIENT_SECRET}`
           ).toString("base64")}`,
         },
-      },
+      }
     );
 
     const newTokens = {
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       if (!userId || !refreshToken) {
         return NextResponse.json(
           { error: "Missing required parameters" },
-          { status: 400 },
+          { status: 400 }
         );
       }
       const newTokens = await refreshSpotifyToken(userId, refreshToken);
@@ -85,10 +85,10 @@ export async function POST(request: Request) {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: `Basic ${Buffer.from(
-            `${CLIENT_ID}:${CLIENT_SECRET}`,
+            `${CLIENT_ID}:${CLIENT_SECRET}`
           ).toString("base64")}`,
         },
-      },
+      }
     );
 
     const tokens = tokenResponse.data;
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
     console.error("Error in Spotify auth:", error);
     return NextResponse.json(
       { error: "Authentication failed" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

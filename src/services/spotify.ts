@@ -87,7 +87,7 @@ export async function getValidSpotifyToken(userId: string) {
 
 // Data Fetching Functions
 export async function fetchSpotifyPlaylists(
-  userId: string,
+  userId: string
 ): Promise<SpotifyPlaylist[]> {
   try {
     const tokens = await getValidSpotifyToken(userId);
@@ -105,11 +105,16 @@ export async function fetchSpotifyPlaylists(
   }
 }
 
-export async function getPlaylistTracks(userId: string, playlistId: string, url?: string) {
+export async function getPlaylistTracks(
+  userId: string,
+  playlistId: string,
+  url?: string
+) {
   try {
     const tokens = await getValidSpotifyToken(userId);
 
-    const requestUrl = url ?? `${SPOTIFY_API_URL}/playlists/${playlistId}/tracks`;
+    const requestUrl =
+      url ?? `${SPOTIFY_API_URL}/playlists/${playlistId}/tracks`;
 
     const response = await axios.get(requestUrl, {
       headers: {
@@ -125,7 +130,7 @@ export async function getPlaylistTracks(userId: string, playlistId: string, url?
 }
 
 export async function fetchSpotifyUserProfile(
-  userId: string,
+  userId: string
 ): Promise<SpotifyUserProfile> {
   try {
     const tokens = await getValidSpotifyToken(userId);
