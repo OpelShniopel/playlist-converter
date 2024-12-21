@@ -14,7 +14,7 @@ export interface YouTubePlaylist {
     itemCount: number;
   };
   status: {
-    privacyStatus: "private" | "public" | "unlisted";
+    privacyStatus: 'private' | 'public' | 'unlisted';
   };
 }
 

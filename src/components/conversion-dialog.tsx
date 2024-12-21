@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { useAuth } from '@/context/auth-context';
+import { convertSpotifyToYouTube } from '@/services/conversion';
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   Progress,
-} from "@/components/ui";
-import { useAuth } from "@/context/auth-context";
-import { convertSpotifyToYouTube } from "@/services/conversion";
+} from '@/components/ui';
 
 interface ConversionDialogProps {
   playlistId: string;
@@ -27,7 +28,7 @@ export function ConversionDialog({
   const { user } = useAuth();
   const [converting, setConverting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [currentTrack, setCurrentTrack] = useState<string>("");
+  const [currentTrack, setCurrentTrack] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [customName, setCustomName] = useState(playlistName);
 
@@ -54,11 +55,11 @@ export function ConversionDialog({
         onClose();
         setConverting(false);
         setProgress(0);
-        setCurrentTrack("");
+        setCurrentTrack('');
         setCustomName(playlistName); // Reset the custom name
       }, 1500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Conversion failed");
+      setError(err instanceof Error ? err.message : 'Conversion failed');
       setConverting(false);
     }
   };
@@ -75,7 +76,7 @@ export function ConversionDialog({
             <div>
               <label
                 htmlFor="playlistName"
-                className="block text-sm font-medium text-foreground mb-1"
+                className="mb-1 block text-sm font-medium text-foreground"
               >
                 YouTube Playlist Name
               </label>
@@ -84,7 +85,7 @@ export function ConversionDialog({
                 id="playlistName"
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
                 placeholder="Enter playlist name"
                 disabled={converting}
               />
@@ -99,14 +100,14 @@ export function ConversionDialog({
               </div>
             )}
 
-            {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+            {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
           </div>
         </div>
 
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-md border border-border hover:bg-muted"
+            className="rounded-md border border-border px-4 py-2 text-sm hover:bg-muted"
             disabled={converting}
           >
             Cancel
@@ -114,9 +115,9 @@ export function ConversionDialog({
           <button
             onClick={handleConversion}
             disabled={converting || !customName.trim()}
-            className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-opacity-90 disabled:opacity-50"
+            className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-opacity-90 disabled:opacity-50"
           >
-            {converting ? "Converting..." : "Convert"}
+            {converting ? 'Converting...' : 'Convert'}
           </button>
         </div>
       </DialogContent>

@@ -7,21 +7,23 @@ with an intuitive user interface and seamless authentication flow.
 ## Features
 
 - **Multi-Platform Authentication**
-    - Google/YouTube authentication
-    - Spotify authentication
-    - Secure token management with automatic refresh
+
+  - Google/YouTube authentication
+  - Spotify authentication
+  - Secure token management with automatic refresh
 
 - **Playlist Management**
-    - View Spotify playlists with detailed track information
-    - Select specific tracks for conversion
-    - Track-by-track conversion progress monitoring
-    - Conversion history tracking
+
+  - View Spotify playlists with detailed track information
+  - Select specific tracks for conversion
+  - Track-by-track conversion progress monitoring
+  - Conversion history tracking
 
 - **User Interface**
-    - Modern, responsive design
-    - Dark mode support
-    - Real-time conversion progress updates
-    - Beautiful playlist grid layout with thumbnails
+  - Modern, responsive design
+  - Dark mode support
+  - Real-time conversion progress updates
+  - Beautiful playlist grid layout with thumbnails
 
 ## Tech Stack
 
@@ -31,8 +33,8 @@ with an intuitive user interface and seamless authentication flow.
 - **Authentication**: Firebase Authentication
 - **Database**: Firebase Firestore
 - **APIs**:
-    - Spotify Web API
-    - YouTube Data API v3
+  - Spotify Web API
+  - YouTube Data API v3
 
 ## Prerequisites
 
@@ -74,17 +76,20 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd playlist-converter
    ```
 
 2. Install dependencies:
+
    ```bash
    yarn install
    ```
 
 3. Run the development server:
+
    ```bash
    yarn dev
    ```
@@ -116,6 +121,7 @@ The application uses Next.js App Router and follows a component-based architectu
 ## Building for Production
 
 1. Build the application:
+
    ```bash
    yarn build
    ```

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@/context/auth-context";
-import { fetchYouTubePlaylists } from "@/services/youtube";
-import { YouTubePlaylist } from "@/types/youtube";
-import { MusicalNoteIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/auth-context';
+import { fetchYouTubePlaylists } from '@/services/youtube';
+import { MusicalNoteIcon } from '@heroicons/react/24/outline';
+
+import { YouTubePlaylist } from '@/types/youtube';
 
 export function YouTubePlaylists() {
   const { user } = useAuth();
@@ -19,9 +20,9 @@ export function YouTubePlaylists() {
         const youtubePlaylist = await fetchYouTubePlaylists(user.id);
         setPlaylists(youtubePlaylist);
       } catch (err) {
-        console.error("Error fetching YouTube playlists:", err);
+        console.error('Error fetching YouTube playlists:', err);
         setError(
-          err instanceof Error ? err.message : "Failed to load playlists"
+          err instanceof Error ? err.message : 'Failed to load playlists'
         );
       } finally {
         setLoading(false);
@@ -34,7 +35,7 @@ export function YouTubePlaylists() {
   // First, check if YouTube is connected
   if (!user?.connectedServices?.youtube) {
     return (
-      <div className="text-center py-8">
+      <div className="py-8 text-center">
         <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-medium text-foreground">
           YouTube Not Connected
@@ -48,15 +49,15 @@ export function YouTubePlaylists() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+      <div className="flex min-h-[200px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-card rounded-lg shadow p-6 border border-border">
+      <div className="rounded-lg border border-border bg-card p-6 shadow">
         <div className="text-center text-red-500">
           <p>Error loading playlists: {error}</p>
         </div>
@@ -66,7 +67,7 @@ export function YouTubePlaylists() {
 
   if (!user?.connectedServices?.youtube) {
     return (
-      <div className="text-center py-8">
+      <div className="py-8 text-center">
         <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-medium text-foreground">
           YouTube Not Connected
@@ -83,37 +84,37 @@ export function YouTubePlaylists() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">YouTube Playlists</h2>
         <span className="text-muted-foreground">
-          {playlists.length} playlist{playlists.length !== 1 ? "s" : ""}
+          {playlists.length} playlist{playlists.length !== 1 ? 's' : ''}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {playlists.map((playlist) => (
           <div
             key={playlist.id}
-            className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
+            className="overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary"
           >
-            <div className="aspect-square relative">
+            <div className="relative aspect-square">
               {playlist.snippet.thumbnails.high?.url ? (
                 <img
                   src={playlist.snippet.thumbnails.high.url}
                   alt={playlist.snippet.title}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-muted flex items-center justify-center">
+                <div className="flex h-full w-full items-center justify-center bg-muted">
                   <MusicalNoteIcon className="h-12 w-12 text-muted-foreground" />
                 </div>
               )}
             </div>
             <div className="p-4">
-              <h3 className="font-semibold text-foreground truncate">
+              <h3 className="truncate font-semibold text-foreground">
                 {playlist.snippet.title}
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {playlist.contentDetails.itemCount} videos
               </p>
-              <p className="text-xs text-muted-foreground mt-1 truncate">
+              <p className="mt-1 truncate text-xs text-muted-foreground">
                 By {playlist.snippet.channelTitle}
               </p>
             </div>
@@ -122,7 +123,7 @@ export function YouTubePlaylists() {
       </div>
 
       {playlists.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium text-foreground">
             No playlists found

@@ -1,20 +1,22 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@/context/auth-context";
-import { fetchSpotifyPlaylists } from "@/services/spotify";
-import { SpotifyPlaylist } from "@/types/spotify";
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/auth-context';
+import { fetchSpotifyPlaylists } from '@/services/spotify';
 import {
-  MusicalNoteIcon,
   MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
-import { ConversionDialog } from "./conversion-dialog";
-import { SpotifyPlaylistTracks } from "./spotify-playlist-tracks";
+  MusicalNoteIcon,
+} from '@heroicons/react/24/outline';
+
+import { SpotifyPlaylist } from '@/types/spotify';
+
+import { ConversionDialog } from './conversion-dialog';
+import { SpotifyPlaylistTracks } from './spotify-playlist-tracks';
 
 interface SelectedTracksMap {
   [playlistId: string]: string[];
 }
 
-type SortOption = "name" | "tracks" | "date";
-type SortDirection = "asc" | "desc";
+type SortOption = 'name' | 'tracks' | 'date';
+type SortDirection = 'asc' | 'desc';
 
 export function SpotifyPlaylists() {
   const { user } = useAuth();
@@ -30,9 +32,9 @@ export function SpotifyPlaylists() {
     null
   );
   const [selectedTracks, setSelectedTracks] = useState<SelectedTracksMap>({});
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("name");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   const canConvert =
     user?.connectedServices?.spotify && user?.connectedServices?.youtube;
@@ -46,9 +48,9 @@ export function SpotifyPlaylists() {
         const spotifyPlaylists = await fetchSpotifyPlaylists(user.id);
         setPlaylists(spotifyPlaylists);
       } catch (err) {
-        console.error("Error fetching Spotify playlists:", err);
+        console.error('Error fetching Spotify playlists:', err);
         setError(
-          err instanceof Error ? err.message : "Failed to load playlists"
+          err instanceof Error ? err.message : 'Failed to load playlists'
         );
       } finally {
         setLoading(false);
@@ -71,12 +73,12 @@ export function SpotifyPlaylists() {
 
     // Apply sorting
     filtered.sort((a, b) => {
-      if (sortBy === "name") {
-        return sortDirection === "asc"
+      if (sortBy === 'name') {
+        return sortDirection === 'asc'
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
-      } else if (sortBy === "tracks") {
-        return sortDirection === "asc"
+      } else if (sortBy === 'tracks') {
+        return sortDirection === 'asc'
           ? a.tracks.total - b.tracks.total
           : b.tracks.total - a.tracks.total;
       }
@@ -88,7 +90,7 @@ export function SpotifyPlaylists() {
 
   if (!user?.connectedServices?.spotify) {
     return (
-      <div className="text-center py-8">
+      <div className="py-8 text-center">
         <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-medium text-foreground">
           Spotify Not Connected
@@ -125,8 +127,8 @@ export function SpotifyPlaylists() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+      <div className="flex min-h-[200px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
       </div>
     );
   }
@@ -152,7 +154,7 @@ export function SpotifyPlaylists() {
               placeholder="Search playlists..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-4 py-2 w-full md:w-64 rounded-md border border-border bg-background text-foreground"
+              className="w-full rounded-md border border-border bg-background py-2 pl-9 pr-4 text-foreground md:w-64"
             />
           </div>
 
@@ -161,50 +163,50 @@ export function SpotifyPlaylists() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="px-3 py-2 rounded-md border border-border bg-background text-foreground"
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground"
             >
               <option value="name">Sort by Name</option>
               <option value="tracks">Sort by Tracks</option>
             </select>
             <button
               onClick={() =>
-                setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
+                setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
               }
-              className="px-3 py-2 rounded-md border border-border bg-background text-foreground hover:bg-muted"
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground hover:bg-muted"
             >
-              {sortDirection === "asc" ? "↑" : "↓"}
+              {sortDirection === 'asc' ? '↑' : '↓'}
             </button>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredPlaylists.map((playlist) => (
           <div
             key={playlist.id}
-            className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
+            className="overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary"
           >
-            <div className="aspect-square relative">
+            <div className="relative aspect-square">
               {playlist.images[0] ? (
                 <img
                   src={playlist.images[0].url}
                   alt={playlist.name}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-muted flex items-center justify-center">
+                <div className="flex h-full w-full items-center justify-center bg-muted">
                   <MusicalNoteIcon className="h-12 w-12 text-muted-foreground" />
                 </div>
               )}
             </div>
             <div className="p-4">
-              <h3 className="font-semibold text-foreground truncate">
+              <h3 className="truncate font-semibold text-foreground">
                 {playlist.name}
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {playlist.tracks.total} tracks
               </p>
-              <p className="text-xs text-muted-foreground mt-1 truncate">
+              <p className="mt-1 truncate text-xs text-muted-foreground">
                 By {playlist.owner.display_name}
               </p>
 
@@ -225,10 +227,10 @@ export function SpotifyPlaylists() {
               )}
 
               <button
-                className={`mt-3 w-full py-2 px-3 rounded-md transition-all ${
+                className={`mt-3 w-full rounded-md px-3 py-2 transition-all ${
                   canConvert
-                    ? "bg-primary text-primary-foreground opacity-100"
-                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    ? 'bg-primary text-primary-foreground opacity-100'
+                    : 'cursor-not-allowed bg-gray-200 text-gray-500'
                 }`}
                 disabled={!canConvert}
                 onClick={() => handleConvertSelected(playlist)}
@@ -238,8 +240,8 @@ export function SpotifyPlaylists() {
                     ? `Convert ${
                         selectedTracks[playlist.id].length
                       } Selected Tracks`
-                    : "Convert Entire Playlist"
-                  : "Connect YouTube to Convert"}
+                    : 'Convert Entire Playlist'
+                  : 'Connect YouTube to Convert'}
               </button>
             </div>
           </div>
@@ -263,15 +265,15 @@ export function SpotifyPlaylists() {
       )}
 
       {filteredPlaylists.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <MusicalNoteIcon className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium text-foreground">
-            {searchQuery ? "No matching playlists found" : "No playlists found"}
+            {searchQuery ? 'No matching playlists found' : 'No playlists found'}
           </h3>
           <p className="mt-2 text-muted-foreground">
             {searchQuery
-              ? "Try adjusting your search terms"
-              : "Create a playlist on Spotify to see it here."}
+              ? 'Try adjusting your search terms'
+              : 'Create a playlist on Spotify to see it here.'}
           </p>
         </div>
       )}

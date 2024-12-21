@@ -12,7 +12,7 @@ export interface User {
 export interface Playlist {
   id: string;
   name: string;
-  source: "spotify" | "youtube" | "soundcloud";
+  source: 'spotify' | 'youtube' | 'soundcloud';
   tracks: Track[];
 }
 

@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
-import axios from "axios";
-import { db } from "@/lib/firebase/config";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
-import { adminAuth } from "@/lib/firebase/admin";
+import { NextResponse } from 'next/server';
+import axios from 'axios';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
-const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
-const SPOTIFY_API_URL = "https://api.spotify.com/v1";
+import { adminAuth } from '@/lib/firebase/admin';
+import { db } from '@/lib/firebase/config';
+
+const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
+const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 const CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`;
@@ -16,15 +17,15 @@ async function refreshSpotifyToken(userId: string, refreshToken: string) {
     const response = await axios.post(
       SPOTIFY_TOKEN_URL,
       new URLSearchParams({
-        grant_type: "refresh_token",
+        grant_type: 'refresh_token',
         refresh_token: refreshToken,
       }),
       {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${Buffer.from(
             `${CLIENT_ID}:${CLIENT_SECRET}`
-          ).toString("base64")}`,
+          ).toString('base64')}`,
         },
       }
     );
@@ -37,14 +38,14 @@ async function refreshSpotifyToken(userId: string, refreshToken: string) {
     };
 
     // Update tokens in Firestore
-    const userDoc = doc(db, "users", userId);
+    const userDoc = doc(db, 'users', userId);
     await updateDoc(userDoc, {
       spotifyTokens: newTokens,
     });
 
     return newTokens;
   } catch (error) {
-    console.error("Error refreshing token:", error);
+    console.error('Error refreshing token:', error);
     throw error;
   }
 }
@@ -54,11 +55,11 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Handle token refresh request
-    if (body.type === "refresh_token") {
+    if (body.type === 'refresh_token') {
       const { userId, refreshToken } = body;
       if (!userId || !refreshToken) {
         return NextResponse.json(
-          { error: "Missing required parameters" },
+          { error: 'Missing required parameters' },
           { status: 400 }
         );
       }
@@ -70,23 +71,23 @@ export async function POST(request: Request) {
     const { code, googleUid } = body;
 
     if (!googleUid) {
-      throw new Error("No Google UID provided");
+      throw new Error('No Google UID provided');
     }
 
     // Exchange code for tokens
     const tokenResponse = await axios.post(
       SPOTIFY_TOKEN_URL,
       new URLSearchParams({
-        grant_type: "authorization_code",
+        grant_type: 'authorization_code',
         code,
         redirect_uri: REDIRECT_URI,
       }),
       {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${Buffer.from(
             `${CLIENT_ID}:${CLIENT_SECRET}`
-          ).toString("base64")}`,
+          ).toString('base64')}`,
         },
       }
     );
@@ -103,12 +104,12 @@ export async function POST(request: Request) {
     const spotifyUser = userResponse.data;
 
     // Always use the Google UID as the document ID
-    const userDoc = doc(db, "users", googleUid);
+    const userDoc = doc(db, 'users', googleUid);
     const userSnapshot = await getDoc(userDoc);
     const existingData = userSnapshot.data() || {};
 
-    console.log("Current user data:", existingData);
-    console.log("Current connected services:", existingData.connectedServices);
+    console.log('Current user data:', existingData);
+    console.log('Current connected services:', existingData.connectedServices);
 
     const newData = {
       ...existingData,
@@ -130,14 +131,14 @@ export async function POST(request: Request) {
       updatedAt: new Date().toISOString(),
     };
 
-    console.log("New data to write:", newData);
+    console.log('New data to write:', newData);
 
     // Use merge: true to preserve existing data
     await setDoc(userDoc, newData, { merge: true });
 
     // Verify the writing
     const verifySnapshot = await getDoc(userDoc);
-    console.log("Verified data after write:", verifySnapshot.data());
+    console.log('Verified data after write:', verifySnapshot.data());
 
     // Create custom token using the Google UID
     const customToken = await adminAuth.createCustomToken(googleUid);
@@ -148,9 +149,9 @@ export async function POST(request: Request) {
       user: spotifyUser,
     });
   } catch (error) {
-    console.error("Error in Spotify auth:", error);
+    console.error('Error in Spotify auth:', error);
     return NextResponse.json(
-      { error: "Authentication failed" },
+      { error: 'Authentication failed' },
       { status: 500 }
     );
   }

@@ -1,19 +1,21 @@
-import type { Metadata } from "next";
-import { Geist } from "next/font/google";
-import { AuthProvider } from "@/context/auth-context";
-import "./globals.css";
-import React from "react";
+import type { Metadata } from 'next';
+import { Geist } from 'next/font/google';
+import { AuthProvider } from '@/context/auth-context';
+
+import './globals.css';
+
+import React from 'react';
 
 const geist = Geist({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Playlist Converter",
+  title: 'Playlist Converter',
   description:
-    "Convert your playlists between Spotify, YouTube, and SoundCloud",
+    'Convert your playlists between Spotify, YouTube, and SoundCloud',
 };
 
 export default function RootLayout({

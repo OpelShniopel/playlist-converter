@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import DashboardLayout from "@/components/layout/dashboard-layout";
-import { ConversionHistory } from "@/components/conversion-history";
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from '@/context/auth-context';
+
+import { ConversionHistory } from '@/components/conversion-history';
+import DashboardLayout from '@/components/layout/dashboard-layout';
 
 export default function ConversionsPage() {
   const { user } = useAuth();
@@ -17,13 +18,13 @@ export default function ConversionsPage() {
         </h2>
 
         {!bothServicesConnected ? (
-          <div className="bg-card rounded-lg border border-border p-6">
+          <div className="rounded-lg border border-border bg-card p-6">
             <p className="text-muted-foreground">
               Connect both Spotify and YouTube to see your conversion history.
             </p>
           </div>
         ) : (
-          <div className="bg-card rounded-lg border border-border p-6">
+          <div className="rounded-lg border border-border bg-card p-6">
             <ConversionHistory />
           </div>
         )}

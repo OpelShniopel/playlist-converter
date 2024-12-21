@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,mdx,js,jsx,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,mdx,js,jsx,json}\""
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -29,6 +32,8 @@
     "eslint-config-next": "15.1.0",
     "firebase-admin": "^13.0.1",
     "postcss": "^8",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

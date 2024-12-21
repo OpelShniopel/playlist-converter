@@ -1,17 +1,18 @@
-"use client";
+'use client';
 
 import React, {
   createContext,
   useContext,
   useEffect,
-  useState,
   useMemo,
-} from "react";
-import { User as FirebaseUser } from "firebase/auth";
-import { auth, db } from "@/lib/firebase/config";
-import { signInWithGoogle } from "@/services/auth";
-import type { User } from "@/types";
-import { doc, onSnapshot } from "firebase/firestore";
+  useState,
+} from 'react';
+import { signInWithGoogle } from '@/services/auth';
+import { User as FirebaseUser } from 'firebase/auth';
+import { doc, onSnapshot } from 'firebase/firestore';
+
+import type { User } from '@/types';
+import { auth, db } from '@/lib/firebase/config';
 
 interface AuthContextType {
   user: User | null;
@@ -38,16 +39,16 @@ export function AuthProvider({
         }
 
         // Subscribe to Firestore user document
-        const userDoc = doc(db, "users", firebaseUser.uid);
+        const userDoc = doc(db, 'users', firebaseUser.uid);
         const unsubscribeFirestore = onSnapshot(userDoc, (snapshot) => {
           if (snapshot.exists()) {
             const userData = snapshot.data();
 
             setUser({
               id: firebaseUser.uid,
-              email: userData.email || firebaseUser.email || "",
+              email: userData.email || firebaseUser.email || '',
               displayName:
-                userData.displayName || firebaseUser.displayName || "",
+                userData.displayName || firebaseUser.displayName || '',
               photoURL: userData.photoURL || firebaseUser.photoURL || undefined,
               connectedServices: userData.connectedServices || {
                 spotify: false,
@@ -73,7 +74,7 @@ export function AuthProvider({
     try {
       await signInWithGoogle();
     } catch (error) {
-      console.error("Google sign-in error:", error);
+      console.error('Google sign-in error:', error);
       throw error;
     }
   };
@@ -98,7 +99,7 @@ export function AuthProvider({
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

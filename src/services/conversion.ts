@@ -1,20 +1,22 @@
-import { db } from "@/lib/firebase/config";
 import {
-  collection,
   addDoc,
-  updateDoc,
-  query,
-  where,
-  getDocs,
-  doc,
+  collection,
   deleteDoc,
-} from "firebase/firestore";
-import { fetchSpotifyPlaylists, getValidSpotifyToken } from "./spotify";
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+
+import { db } from '@/lib/firebase/config';
+
+import { fetchSpotifyPlaylists, getValidSpotifyToken } from './spotify';
 import {
-  searchYouTubeVideo,
-  createYouTubePlaylist,
   addVideoToPlaylist,
-} from "./youtube";
+  createYouTubePlaylist,
+  searchYouTubeVideo,
+} from './youtube';
 
 interface ConversionProgress {
   processed: number;
@@ -25,10 +27,10 @@ interface ConversionProgress {
 interface Conversion {
   userId: string;
   sourcePlaylistId: string;
-  sourceType: "spotify" | "youtube";
+  sourceType: 'spotify' | 'youtube';
   targetPlaylistId?: string;
-  targetType: "spotify" | "youtube";
-  status: "processing" | "completed" | "failed";
+  targetType: 'spotify' | 'youtube';
+  status: 'processing' | 'completed' | 'failed';
   progress: number;
   error?: string;
   createdAt: string;
@@ -52,12 +54,12 @@ export async function convertSpotifyToYouTube(
 ) {
   try {
     // Create conversion record
-    const conversionRef = await addDoc(collection(db, "conversions"), {
+    const conversionRef = await addDoc(collection(db, 'conversions'), {
       userId,
       sourcePlaylistId: spotifyPlaylistId,
-      sourceType: "spotify",
-      targetType: "youtube",
-      status: "processing",
+      sourceType: 'spotify',
+      targetType: 'youtube',
+      status: 'processing',
       progress: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -69,15 +71,15 @@ export async function convertSpotifyToYouTube(
     const tokens = await getValidSpotifyToken(userId);
 
     if (!playlist) {
-      throw new Error("Spotify playlist not found");
+      throw new Error('Spotify playlist not found');
     }
 
     // Create YouTube playlist
     const youtubePlaylist = await createYouTubePlaylist(
       userId,
       customName ?? `${playlist.name} (from Spotify)`,
-      playlist.description || "Converted from Spotify",
-      "private"
+      playlist.description || 'Converted from Spotify',
+      'private'
     );
 
     // Update conversion record with target playlist ID
@@ -135,21 +137,21 @@ export async function convertSpotifyToYouTube(
     }
 
     await updateDoc(conversionRef, {
-      status: "completed",
+      status: 'completed',
       progress: 100,
       updatedAt: new Date().toISOString(),
     });
 
     return youtubePlaylist;
   } catch (error) {
-    console.error("Conversion error:", error);
+    console.error('Conversion error:', error);
     throw error;
   }
 }
 
 export async function getConversionHistory(userId: string) {
-  const conversionsRef = collection(db, "conversions");
-  const q = query(conversionsRef, where("userId", "==", userId));
+  const conversionsRef = collection(db, 'conversions');
+  const q = query(conversionsRef, where('userId', '==', userId));
   const snapshot = await getDocs(q);
 
   return snapshot.docs.map((doc) => ({
@@ -160,10 +162,10 @@ export async function getConversionHistory(userId: string) {
 
 export async function deleteConversion(conversionId: string) {
   try {
-    const conversionRef = doc(db, "conversions", conversionId);
+    const conversionRef = doc(db, 'conversions', conversionId);
     await deleteDoc(conversionRef);
   } catch (error) {
-    console.error("Error deleting conversion:", error);
+    console.error('Error deleting conversion:', error);
     throw error;
   }
 }
