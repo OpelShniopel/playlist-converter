@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   MagnifyingGlassIcon,
   MusicalNoteIcon,
@@ -15,7 +15,7 @@ interface SelectedTracksMap {
   [playlistId: string]: string[];
 }
 
-type SortOption = 'name' | 'tracks' | 'date';
+type SortOption = 'name' | 'tracks';
 type SortDirection = 'asc' | 'desc';
 
 export function SpotifyPlaylists() {
@@ -35,9 +35,43 @@ export function SpotifyPlaylists() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-
   const canConvert =
     user?.connectedServices?.spotify && user?.connectedServices?.youtube;
+
+  const filterAndSortPlaylists = useCallback(
+    (
+      playlists: SpotifyPlaylist[],
+      query: string,
+      sortBy: SortOption,
+      sortDirection: SortDirection
+    ) => {
+      let filtered = [...playlists];
+
+      // Apply search filter
+      if (query) {
+        filtered = filtered.filter((playlist) =>
+          playlist.name.toLowerCase().includes(query.toLowerCase())
+        );
+      }
+
+      // Apply sorting
+      filtered.sort((a, b) => {
+        if (sortBy === 'name') {
+          return sortDirection === 'asc'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        } else if (sortBy === 'tracks') {
+          return sortDirection === 'asc'
+            ? a.tracks.total - b.tracks.total
+            : b.tracks.total - a.tracks.total;
+        }
+        return 0;
+      });
+
+      return filtered;
+    },
+    []
+  );
 
   useEffect(() => {
     async function loadPlaylists() {
@@ -62,31 +96,14 @@ export function SpotifyPlaylists() {
 
   // Filter and sort playlists
   useEffect(() => {
-    let filtered = [...playlists];
-
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter((playlist) =>
-        playlist.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      if (sortBy === 'name') {
-        return sortDirection === 'asc'
-          ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name);
-      } else if (sortBy === 'tracks') {
-        return sortDirection === 'asc'
-          ? a.tracks.total - b.tracks.total
-          : b.tracks.total - a.tracks.total;
-      }
-      return 0;
-    });
-
+    const filtered = filterAndSortPlaylists(
+      playlists,
+      searchQuery,
+      sortBy,
+      sortDirection
+    );
     setFilteredPlaylists(filtered);
-  }, [playlists, searchQuery, sortBy, sortDirection]);
+  }, [playlists, searchQuery, sortBy, sortDirection, filterAndSortPlaylists]);
 
   if (!user?.connectedServices?.spotify) {
     return (
