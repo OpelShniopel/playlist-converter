@@ -142,6 +142,26 @@ export function SpotifyPlaylists() {
     }
   };
 
+  const getConvertButtonText = (
+    canConvert: boolean | undefined,
+    playlistId: string,
+    selectedTracks: { [playlistId: string]: string[] }
+  ): string => {
+    // Ensure canConvert is a boolean
+    const isConvertEnabled = Boolean(canConvert);
+
+    if (!isConvertEnabled) {
+      return 'Connect YouTube to Convert';
+    }
+
+    const selectedTrackCount = selectedTracks[playlistId]?.length || 0;
+    if (selectedTrackCount > 0) {
+      return `Convert ${selectedTrackCount} Selected Tracks`;
+    }
+
+    return 'Convert Entire Playlist';
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
@@ -252,13 +272,7 @@ export function SpotifyPlaylists() {
                 disabled={!canConvert}
                 onClick={() => handleConvertSelected(playlist)}
               >
-                {canConvert
-                  ? (selectedTracks[playlist.id]?.length || 0) > 0
-                    ? `Convert ${
-                        selectedTracks[playlist.id].length
-                      } Selected Tracks`
-                    : 'Convert Entire Playlist'
-                  : 'Connect YouTube to Convert'}
+                {getConvertButtonText(canConvert, playlist.id, selectedTracks)}
               </button>
             </div>
           </div>
