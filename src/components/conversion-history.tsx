@@ -64,6 +64,19 @@ export function ConversionHistory() {
     }
   }
 
+  const getStatusStyles = (status: 'completed' | 'processing' | 'failed') => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+      case 'processing':
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+      case 'failed':
+        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+      default:
+        return '';
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
@@ -109,13 +122,7 @@ export function ConversionHistory() {
                   {conversion.targetType.toUpperCase()}
                 </span>
                 <span
-                  className={`rounded-full px-2 py-1 text-xs ${
-                    conversion.status === 'completed'
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      : conversion.status === 'processing'
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                  }`}
+                  className={`rounded-full px-2 py-1 text-xs ${getStatusStyles(conversion.status)}`}
                 >
                   {conversion.status.charAt(0).toUpperCase() +
                     conversion.status.slice(1)}
